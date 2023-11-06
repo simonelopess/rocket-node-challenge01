@@ -5,20 +5,16 @@
     DELETE -> /tasks/:id
     PATCH -> /tasks/:id/complete */
 import { randomUUID } from 'node:crypto';
+import { Database } from './database.js';
+
+const database = new Database();
 
 export const routes = [
     {
         method: 'GET',
         path: '/tasks',
         handler: (req, res) => {
-            const tasks = {
-                id: randomUUID(),
-                title: req.title,
-                description: req.description,
-                completed_at: null,
-                created_at: Date.now(),
-                updated_at: Date.now()
-            }
+            const tasks = database.select('tasks');
             return res.end(JSON.stringify(tasks))
         }
     },
@@ -29,7 +25,7 @@ export const routes = [
             const { title, description } = req.body || {};
 
             if (title && description) {
-                const tasks = {
+                const task = {
                     id: randomUUID(),
                     title,
                     description,
@@ -38,7 +34,8 @@ export const routes = [
                     updated_at: new Date()
                 }
                
-                return res.writeHead(201).end(JSON.stringify(tasks));
+                database.insert('tasks', task)
+                return res.writeHead(201).end();
             }
             return res.writeHead(404).end('Missing information! Title or description not found')
 
