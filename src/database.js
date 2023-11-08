@@ -57,7 +57,7 @@ export class Database {
         const rowIndex = this.#database[table].findIndex(row => row.id === id);
         if (rowIndex > -1) {
             if (completed) {
-                this.#database[table][rowIndex] = { ...this.#database[table][rowIndex], completed_at: new Date()}
+                this.#database[table][rowIndex] = { ...this.#database[table][rowIndex], updated_at: new Date() , completed_at: new Date()}
                 this.#persist();
             } else {
                 return this.#database[table][rowIndex]
