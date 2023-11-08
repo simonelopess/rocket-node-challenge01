@@ -45,11 +45,23 @@ export class Database {
     }   
     
     update(table, id, data) {
-        console.log('data', data)
         const rowIndex  = this.#database[table].findIndex(row => row.id === id);
 
         if (rowIndex > -1) {
             this.#database[table][rowIndex] = {...this.#database[table][rowIndex], ...data}
+            this.#persist();
+        }
+    }
+
+    completeTask(table, id, completed) {
+        const rowIndex = this.#database[table].findIndex(row => row.id === id);
+        if (rowIndex > -1) {
+            if (completed) {
+                this.#database[table][rowIndex] = { ...this.#database[table][rowIndex], completed_at: new Date()}
+                this.#persist();
+            } else {
+                return this.#database[table][rowIndex]
+            }
         }
     }
 }
